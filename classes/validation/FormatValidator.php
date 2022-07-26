@@ -8,13 +8,14 @@ class FormatValidator extends AbstractValidator
 {
 
     /**
+     * @param IValidatable      $entity
      * @param string            $propertyName
      * @param IFormatValidation $validation
      * @throws ValidationException
      */
-    protected function propertyValidation(string $propertyName, IValidation $validation)
+    protected function propertyValidation(IValidatable $entity, string $propertyName, IValidation $validation)
     {
-        $validation->validate($this->entity->$propertyName);
+        $validation->validate($entity->$propertyName);
     }
 
     protected function getValidationClass(): string

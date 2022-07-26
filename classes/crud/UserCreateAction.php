@@ -4,11 +4,12 @@ namespace crud;
 class UserCreateAction implements IAction
 {
 
-    public function __construct(protected string $name, protected string $email)
+    public function __construct(protected string $name, protected string $email, protected \validation\IValidator $validator)
     {
     }
 
     /**
+     * @param \persistence\IPersister $persister
      * @throws \ReflectionException
      * @throws \validation\ValidationException
      */
@@ -19,8 +20,7 @@ class UserCreateAction implements IAction
         $user->email = $this->email;
         $user->created = time();
 
-        (new \validation\FormatValidator($user))->validate();
-        (new \validation\UniqueValidator($user, $persister))->validate();
+        $this->validator->validate($user);
 
         $persister->persist($user);
     }

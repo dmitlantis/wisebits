@@ -9,7 +9,7 @@ class FormatValidationTest extends \PHPUnit\Framework\TestCase
     public function setUp(): void
     {
         $this->user = new \entities\User();
-        $this->validator = new \validation\FormatValidator($this->user);
+        $this->validator = new \validation\FormatValidator();
     }
 
     public function testValidUser()
@@ -17,7 +17,7 @@ class FormatValidationTest extends \PHPUnit\Framework\TestCase
         $this->expectNotToPerformAssertions();
         $this->user->email = 'asdf@asdf.com';
         $this->user->name = 'zaksnyder01';
-        $this->validator->validate();
+        $this->validator->validate($this->user);
     }
 
     public function testInvalidEmail()
@@ -25,7 +25,7 @@ class FormatValidationTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\validation\ValidationException::class);
         $this->user->email = '@asdf.com';
         $this->user->name = 'zaksnyder01';
-        $this->validator->validate();
+        $this->validator->validate($this->user);
     }
 
     public function testInvalidUsername()
@@ -33,7 +33,7 @@ class FormatValidationTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\validation\ValidationException::class);
         $this->user->email = 'asdf@asdf.com';
         $this->user->name = 'zak-snyder01';
-        $this->validator->validate();
+        $this->validator->validate($this->user);
     }
 
     public function testInvalidShortUsername()
@@ -41,7 +41,7 @@ class FormatValidationTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\validation\ValidationException::class);
         $this->user->email = 'asdf@asdf.com';
         $this->user->name = 'zak';
-        $this->validator->validate();
+        $this->validator->validate($this->user);
     }
 
 }

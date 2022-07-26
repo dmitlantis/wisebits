@@ -6,6 +6,7 @@ class User implements \validation\IValidatable, \persistence\IPersistable {
     public ?int $id = null;
     #[\validation\RegexValidation('/^[a-z0-9]{8,}$/')]
     #[\validation\UniqueValidation]
+    #[\validation\BlackListValidation]
     public string $name;
     #[\validation\EmailValidation]
     #[\validation\UniqueValidation]

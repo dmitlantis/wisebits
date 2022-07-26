@@ -1,20 +1,16 @@
 <?php
 namespace validation;
 
-abstract class AbstractValidator
+abstract class AbstractValidator implements IValidator
 {
-
-    public function __construct(protected IValidatable $entity)
-    {
-    }
 
     /**
      * @throws \ReflectionException
      * @throws ValidationException
      */
-    public function validate()
+    public function validate(IValidatable $entity)
     {
-        $reflection = new \ReflectionClass($this->entity::class);
+        $reflection = new \ReflectionClass($entity::class);
         $properties = $reflection->getProperties();
 
         foreach ($properties as $property) {
@@ -23,17 +19,18 @@ abstract class AbstractValidator
             foreach ($attributes as $attribute) {
                 /** @var IValidation $validation */
                 $validation = $attribute->newInstance();
-                $this->propertyValidation($propertyName, $validation);
+                $this->propertyValidation($entity, $propertyName, $validation);
             }
         }
     }
 
     /**
-     * @param string      $propertyName
-     * @param IValidation $validation
+     * @param IValidatable $entity
+     * @param string       $propertyName
+     * @param IValidation  $validation
      * @throws ValidationException
      */
-    abstract protected function propertyValidation(string $propertyName, IValidation $validation);
+    abstract protected function propertyValidation(IValidatable $entity, string $propertyName, IValidation $validation);
 
     abstract protected function getValidationClass():string;
 

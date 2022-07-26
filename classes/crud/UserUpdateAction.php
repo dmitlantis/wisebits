@@ -4,25 +4,25 @@ namespace crud;
 class UserUpdateAction implements IAction
 {
 
-    public function __construct(protected int $id, protected ?string $name = null, protected ?string $email = null)
+    public function __construct(protected int $id, protected \validation\IValidator $validator, protected ?string $name = null, protected ?string $email = null)
     {
     }
 
     /**
+     * @param \persistence\IPersister $persister
+     * @throws \ReflectionException
      * @throws \persistence\PersistanceException
      * @throws \validation\ValidationException
-     * @throws \ReflectionException
      */
     public function execute(\persistence\IPersister $persister)
     {
         $user = new \entities\User();
         $user->id = $this->id;
         $persister->get($user);
-        $user->name ??= $this->name;
-        $user->email ??= $this->email;
+        $user->name = $this->name ?? $user->name;
+        $user->email = $this->email ?? $user->email;
 
-        (new \validation\FormatValidator($user))->validate();
-        (new \validation\UniqueValidator($user, $persister))->validate();
+        $this->validator->validate($user);
 
         $persister->persist($user);
     }
